@@ -4528,7 +4528,7 @@ export const worldGeoJson = {
         labelrank: 5,
         sovereignt: "United Kingdom",
         sov_a3: "GB1",
-        countryCode: "GB1",
+        countryCode: "GBR",
         adm0_dif: 1,
         level: 2,
         type: "Dependency",

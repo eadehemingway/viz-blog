@@ -1,31 +1,15 @@
 import React from "react";
 import * as d3 from "d3";
-import styled from "styled-components";
 import { hogs } from "../data/hogObj.js";
 import { worldGeoJson } from "./../assets/worldgeojson";
 
 export class ArtOneMap extends React.Component {
-  svgWidth = 800;
+  svgWidth = 1000;
   svgHeight = 1000;
   projection = null;
 
   componentDidMount() {
-    const colorScale = d3
-      .scaleQuantize() // scales the numbers because the colours can be considered catagorical... allows each colour to represent lots of values
-      .domain([0, 10])
-      .range([
-        "rgb(255,245,240)",
-        "rgb(254,224,210)",
-        "rgb(252,187,161)",
-        "rgb(252,146,114)",
-        "rgb(251,106,74)",
-        "rgb(239,59,44)",
-        "rgb(203,24,29)",
-        "rgb(165,15,21)",
-        "rgb(103,0,13)"
-      ]);
-
-    const projection = d3.geoNaturalEarth1();
+    const projection = d3.geoMercator();
     const path = d3.geoPath(projection);
 
     const svg = d3
@@ -33,42 +17,64 @@ export class ArtOneMap extends React.Component {
       .attr("width", this.svgWidth)
       .attr("height", this.svgHeight);
 
-    // combine the geoJson with the zombie data
     worldGeoJson.features.forEach((country, countryIndex) => {
-      // the features refers to each state
-      hogs.forEach((hog, hogIndex) => {
-        // if (
-        //   country.properties.countryCode === "PHL" &&
-        //   hog.countryCode === "PHL"
-        // ) {
-        //   console.log(country, hog);
-        // }
+      hogs.forEach(hog => {
         if (country.properties.countryCode !== hog.countryCode) {
           return null;
         }
-        // this says add the zombie figure to the geoJson data
-        worldGeoJson.features[countryIndex].properties.yearsHogWoman =
-          hog.yearsHogWoman;
+        worldGeoJson.features[countryIndex].properties.info = hog;
       });
     });
 
-    svg
-      .selectAll("path")
+    const countryGroups = svg
+      .selectAll(".country-groups")
       .data(worldGeoJson.features)
       .enter()
+      .append("g")
+      .attr("class", "country-groups");
+    const tooltipPadding = 26;
+    countryGroups
       .append("path")
       .attr("d", path)
       .attr("fill", d => this.getColor(d))
       .attr("stroke", "lightsteelblue")
       .attr("stroke-width", 1)
-      .attr("transform", d => `scale(0.8)`);
+      .attr("transform", `scale(0.8) translate(60, 220)`)
+      .on("mouseover", d => {
+        tooltipGroup.style("visibility", "visible");
+      })
+      .on("mousemove", d => {
+        tooltipGroup.attr(
+          "transform",
+          `translate(${d3.event.offsetX},${d3.event.offsetY - tooltipPadding})`
+        );
+        if (tooltipText && d.properties.info) {
+          tooltipText
+            .text(d.properties.info.country)
+            .style("fill", "red")
+            .style("z-index", "100")
+            .style("font-size", "10px")
+            .attr("dx", "5")
+            .attr("dy", "13");
+        }
+      })
+      .on("mouseout", () => tooltipGroup.style("visibility", "hidden"));
+
+    const tooltipGroup = svg.append("g").attr("class", "tooltip");
+
+    tooltipGroup
+      .append("rect")
+      .attr("width", 200)
+      .attr("height", 20)
+      .attr("fill", "white");
+    const tooltipText = tooltipGroup.append("text").attr("class", "text");
   }
 
   getColor = d => {
-    const years = d.properties.yearsHogWoman;
-    // if (d.properties.countryCode === "ERI") {
-    //   console.log(years);
-    // }
+    if (!d.properties.info) {
+      return "grey";
+    }
+    const years = d.properties.info.yearsHogWoman;
     if (years === undefined) return "white";
     if (years === 0) return "#ffece5";
     if (years < 5) return "#ffc7b3";
