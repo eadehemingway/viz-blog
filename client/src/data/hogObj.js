@@ -2114,7 +2114,7 @@ export const hogs = [
        
         {
             country: "United Kingdom",
-            countryCode:"GRR",
+            countryCode:"GBR",
             HOGIsMan: true,
             HOGAlwaysMan: false,
             yearsHogWoman: 14,
