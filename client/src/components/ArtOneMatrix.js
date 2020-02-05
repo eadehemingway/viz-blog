@@ -265,6 +265,7 @@ const PStyledSienna = styled.p`
 const Container = styled.div`
   position: relative;
   padding-top: 60px;
+  height: 400px;
 `;
 const PositionedSvg = styled.svg`
   position: absolute;

@@ -6,7 +6,7 @@ export class ArticleOne extends React.Component {
   render() {
     return (
       <ArticleTemplate title="Female Political Represtentation Worldwide">
-        {/* <ArtOneMatrix /> */}
+        <ArtOneMatrix />
         <ArtOneMap />
         {/* <div>
           Icons made by{' '}

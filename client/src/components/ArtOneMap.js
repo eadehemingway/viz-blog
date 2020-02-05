@@ -2,14 +2,17 @@ import React from "react";
 import * as d3 from "d3";
 import { hogs } from "../data/hogObj.js";
 import { worldGeoJson } from "./../assets/worldgeojson";
-
+import styled from "styled-components";
 export class ArtOneMap extends React.Component {
   svgWidth = 1000;
-  svgHeight = 1000;
+  svgHeight = 700;
   projection = null;
 
   componentDidMount() {
-    const projection = d3.geoMercator();
+    const projection = d3
+      .geoMercator()
+      .scale(960 / Math.PI / 2) // 960 pixels over 2 π radians
+      .translate([480, 300]);
     const path = d3.geoPath(projection);
 
     const svg = d3
@@ -75,9 +78,7 @@ export class ArtOneMap extends React.Component {
       .on("mouseout", () => tooltipGroup.style("visibility", "hidden"));
 
     const tooltipGroup = svg.append("g").attr("class", "tooltip");
-
     const tooltipRect = tooltipGroup.append("rect");
-
     const tooltipCountryText = tooltipGroup
       .append("text")
       .attr("class", "country-text");
@@ -103,9 +104,13 @@ export class ArtOneMap extends React.Component {
   };
   render() {
     return (
-      <section>
+      <MapWrapper>
         <svg id="map-svg" />
-      </section>
+      </MapWrapper>
     );
   }
 }
+
+const MapWrapper = styled.div`
+  height: 800px;
+`;
