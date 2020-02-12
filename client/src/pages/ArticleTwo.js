@@ -1,10 +1,10 @@
-import React from 'react'
-import { ArticleTemplate } from './../components/ArticleTemplate'
-
+import React from "react";
+import { ArticleTemplate } from "./../components/ArticleTemplate";
+import { ArtTwoMap } from "./../components/ArtTwoMap";
 export const ArticleTwo = () => {
   return (
-    <ArticleTemplate title="Progress of post colonial Africa">
-      <div>helll</div>
+    <ArticleTemplate title="Rise of national populism">
+      <ArtTwoMap />
     </ArticleTemplate>
-  )
-}
+  );
+};

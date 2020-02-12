@@ -20710,7 +20710,7 @@ export const worldGeoJson = {
         featurecla: "Admin-0 country",
         labelrank: 5,
         sovereignt: "Netherlands",
-        sov_a3: "NL1",
+        sov_a3: "NLD",
         countryCode: "NLD",
         adm0_dif: 1,
         level: 2,

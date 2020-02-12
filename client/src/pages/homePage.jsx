@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react";
 
-import { ArticleTile } from './../components/ArticleTile'
-import styled from 'styled-components'
-import './homePageStyle.scss'
+import { ArticleTile } from "./../components/ArticleTile";
+import styled from "styled-components";
+import "./homePageStyle.scss";
 
 export const ArticleList = () => {
   return (
@@ -23,7 +23,7 @@ export const ArticleList = () => {
 
       <ArticleTile
         url="/article-two"
-        title="Progress in Post Political Africa"
+        title="Rise of national populism"
         updated="Jan 2020"
       />
       <Creditations>
@@ -37,27 +37,27 @@ export const ArticleList = () => {
         </a>
       </Creditations>
     </div>
-  )
-}
+  );
+};
 
 const TitleBox = styled.div`
   border-bottom: 1px solid #ffa36f;
   padding-left: 60px;
   height: 250px;
-`
+`;
 
 const H2 = styled.h2`
   font-size: 18px;
   color: #ff5c00;
   margin-bottom: 40px;
-`
+`;
 const H1 = styled.h1`
   text-transform: uppercase;
   font-size: 36px;
   color: #ff5c00;
   margin-top: 70px;
   margin-bottom: 60px;
-`
+`;
 const Creditations = styled.div`
   color: #ffa36f;
 
@@ -66,4 +66,4 @@ const Creditations = styled.div`
     font-size: 12px;
     text-align: right;
   }
-`
+`;
