@@ -1,10 +1,12 @@
-import React from "react";
-import { ArticleTemplate } from "./../components/ArticleTemplate";
-import { ArtTwoMap } from "./../components/ArtTwoMap";
+import React from 'react';
+
+import {ArticleTemplate} from './../components/ArticleTemplate';
+import NationalPopulism from '../components/MapNationalPopulism';
+
 export const ArticleTwo = () => {
   return (
     <ArticleTemplate title="Rise of national populism">
-      <ArtTwoMap />
+      <NationalPopulism />
     </ArticleTemplate>
   );
 };
