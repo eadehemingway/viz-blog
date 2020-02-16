@@ -1,4 +1,4 @@
-export const europeJson = {
+export default {
   type: "FeatureCollection",
   features: [
     {
