@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import data from '../assets/mapEuropeWithElectionData';
 
 export default function NationalPopulism() {
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(0);
   const ref = useRef(0);
 
   useEffect(() => {
@@ -16,18 +16,22 @@ export default function NationalPopulism() {
     if (ref.current >= 39) return;
     let id = setTimeout(() => {
       ref.current = ref.current + 1;
-      setIndex(index+1)
+      setIndex(index + 1);
     }, 300);
     return () => clearTimeout(id);
   });
 
   useEffect(() => {
     reColourMap(ref.current);
-  }, [ref.current]);
+  }, [index]);
 
-  useEffect(()=> {
-    updateToolTip()
-  }, [index])
+  useEffect(() => {
+    createTooltips();
+  }, []);
+
+  useEffect(() => {
+    createTooltips();
+  }, [index]);
 
   function reColourMap(refCurrent) {
     d3.selectAll('path').attr('fill', country => {
@@ -47,15 +51,19 @@ export default function NationalPopulism() {
       .scale(1500 / Math.PI / 2)
       .translate([580, 450]);
 
-    const map = d3.select('#map')
+    const map = d3
+      .select('#map')
       .attr('width', 2000)
-      .attr('height', 1000)
+      .attr('height', 1000);
 
-    const countryGroups = map.selectAll('.country-groups')
+    const countryGroups = map
+      .selectAll('.country-groups')
       .data(data.features)
       .enter()
       .append('g')
-      .attr('class', 'country-groups')
+      .attr('class', 'country-groups');
+
+    countryGroups
       .append('path')
       .attr('d', d3.geoPath(projection))
       .attr('stroke-width', '1px')
@@ -63,47 +71,82 @@ export default function NationalPopulism() {
       .attr('stroke', 'lightsteelblue')
       .attr('transform', `scale(2) translate(-300, 0)`);
 
+    const tooltipGroup = countryGroups
+      .append('g')
+      .attr('class', 'tooltip-group')
+      .style('visibility', 'hidden');
+    tooltipGroup.append('rect');
+    // tooltipGroup.append('text').attr('class', 'years-text');
+    tooltipGroup.append('text').attr('class', 'tooltip-text');
+  }
+
+  // function updateToolTip() {
+  //   console.log('updating tooltip');
+  //   // d3.selectAll('.country-groups').attr('width', d=> console.log('dddd', d))
+  //   d3.selectAll('.country-text')
+  //     .text((d, i) => {
+  //       // if (!d.properties.electionData) return 'yo';
+  //       // if (d.properties.name_long === countryMouseOver) {
+  //       //   return d.properties.electionData[ref.current].value;
+  //       // }
+  //       return 'hi';
+  //     })
+  //     .style('fill', 'red')
+  //     .style('z-index', '100')
+  //     .style('font-size', '10px')
+  //     .attr('dx', '5')
+  //     .attr('dy', '13');
+  // }
+
+  function createTooltips() {
     const tooltipPadding = 10;
-    const tooltipGroup = countryGroups.append("g").attr("class", "tooltip");
-    const tooltipRect = tooltipGroup.append("rect");
-    const tooltipYearsText = tooltipGroup
-      .append("text")
-      .attr("class", "years-text");
-    const tooltipCountryText = tooltipGroup
-      .append("text")
-      .attr("class", "country-text");
-      countryGroups.on("mouseover", d => {
-      tooltipGroup.style("visibility", "visible");
-    })
-    .on("mousemove", d => {
+    const countryGroups = d3.selectAll('.country-groups');
+    const tooltipGroup = d3.selectAll('.tooltip-group');
+    const tooltipRect = d3.selectAll('rect');
+    const countryText = d3.selectAll('.tooltip-text');
+    console.log('tooltipRect:', tooltipRect);
 
-      tooltipGroup.attr(
-        "transform",
-        `translate(${d3.event.offsetX + tooltipPadding},${d3.event.offsetY})`
-      );
+    countryGroups
+      .on('mouseover', d => {
+        console.log('d', d);
+        tooltipGroup.style('visibility', 'visible');
+        if (d.properties.electionData) {
+          countryText.text(
+            `${d.properties.name_long}: ${
+              d.properties.electionData[ref.current].value
+            }`
+          );
+        } else {
+          countryText.text(`${d.properties.name_long}`);
+        }
         tooltipRect
-          .attr("width", 200)
-          .attr("height", 60)
-          .attr("fill", "white");
-    })
-    // .on("mouseout", () => tooltipGroup.style("visibility", "hidden"));
+          .attr('width', 200)
+          .attr('height', 60)
+          .attr('fill', 'white');
+      })
+      .on('mousemove', d => {
+        console.log('ref.current', ref.current);
+
+        if (d.properties.electionData) {
+          countryText.text(
+            `${d.properties.name_long}: ${
+              d.properties.electionData[ref.current].value
+            }`
+          );
+        } else {
+          countryText.text(`${d.properties.name_long}`);
+        }
+        tooltipGroup.attr(
+          'transform',
+          `translate(${d3.event.offsetX + tooltipPadding},${d3.event.offsetY})`
+        );
+        tooltipRect
+          .attr('width', 200)
+          .attr('height', 60)
+          .attr('fill', 'white');
+      })
+      .on('mouseout', () => tooltipGroup.style('visibility', 'hidden'));
   }
-
-  function updateToolTip() {
-
-    // d3.selectAll('.country-groups').attr('width', d=> console.log('dddd', d))
-    d3.selectAll('.country-text')
-          .text(d=> {   
-            if(!d.properties.electionData) return
-           return d.properties.electionData[ref.current].value})
-          .style("fill", "red")
-          .style("z-index", "100")
-          .style("font-size", "10px")
-          .attr("dx", "5")
-          .attr("dy", "13");
-    
-  }
-
   return (
     <MapWrapper>
       <h1>{1980 + index}</h1>
