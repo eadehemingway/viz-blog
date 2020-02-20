@@ -51,10 +51,10 @@ export default function NationalPopulism() {
       .attr('width', 2000)
       .attr('height', 1000)
 
-    const countryGroups = map.selectAll('.country-groups')
+    const countryGroups = map.selectAll('hello world')
       .data(data.features)
       .enter().append('g')
-      .attr('class', 'country-groups');
+      .attr('class', 'country-group');
 
     countryGroups
       .append('path')
@@ -82,12 +82,12 @@ export default function NationalPopulism() {
       .attr("dx", "5")
       .attr("dy", "13");
 
-    countryGroups.on('mousemove', function() { 
+    countryGroups.on('mousemove', function() {
       d3
         .select(this)
+        .raise()
         .select('.tooltip')
         .style("visibility", "visible")
-        .style("z-index", "100")
         .attr("transform", `translate(${d3.event.offsetX + 10},${d3.event.offsetY})`);
     });
 
