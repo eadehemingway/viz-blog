@@ -71,14 +71,18 @@ export default function NationalPopulism() {
       .attr('stroke', 'lightsteelblue')
       .attr('transform', `scale(2) translate(-300, 0)`);
 
-    const tooltipGroup = countryGroups
+    const tooltipGroups = map
+      .selectAll('.tooltip-groups')
+      .data(data.features)
+      .enter()
       .append('g')
-      .attr('class', 'tooltip-group')
+      .attr('class', 'tooltip-groups')
       .attr('class', d => `tooltip-${d.properties.name_long}`)
       .style('visibility', 'hidden');
-    tooltipGroup.append('rect');
 
-    tooltipGroup
+    tooltipGroups.append('rect');
+
+    tooltipGroups
       .append('text')
       .text(ref.current)
       .attr('class', 'tooltip-text');
@@ -101,7 +105,6 @@ export default function NationalPopulism() {
       .attr('x', 10)
       .attr('y', 20);
 
-    // test
     countryGroups
       .on('mouseover', function(d) {
         const tooltip = d3.select(`.tooltip-${d.properties.name_long}`);
@@ -117,16 +120,10 @@ export default function NationalPopulism() {
           .attr('fill', 'white');
       })
       .on('mousemove', d => {
-        const tooltip = d3.select(`.tooltip-${d.properties.name_long}`);
-
-        tooltip.attr(
+        d3.select(`.tooltip-${d.properties.name_long}`).attr(
           'transform',
           `translate(${d3.event.offsetX + tooltipPadding},${d3.event.offsetY})`
         );
-        tooltipRect
-          .attr('width', 200)
-          .attr('height', 60)
-          .attr('fill', 'white');
       })
       .on('mouseout', d =>
         d3
