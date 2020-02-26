@@ -101,6 +101,7 @@ export default function NationalPopulism() {
       .attr('x', 10)
       .attr('y', 20);
 
+    // test
     countryGroups
       .on('mouseover', function(d) {
         const tooltip = d3.select(`.tooltip-${d.properties.name_long}`);
