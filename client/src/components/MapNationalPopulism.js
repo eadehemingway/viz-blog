@@ -7,19 +7,19 @@ import data from '../assets/mapEuropeWithElectionData';
 export default function NationalPopulism() {
   const [index, setIndex] = useState(0)
   const ref = useRef(0);
-
-  useEffect(() => {
-    mountD3Map();
-  }, []);
-
+  
   useEffect(() => {
     if (ref.current >= 39) return;
     let id = setTimeout(() => {
       ref.current = ref.current + 1;
-      setIndex(index+1)
+      setIndex(index + 1)
     }, 300);
     return () => clearTimeout(id);
   });
+
+  useEffect(() => {
+    mountD3Map();
+  }, []);
 
   useEffect(() => {
     reColourMap(ref.current);
@@ -28,18 +28,6 @@ export default function NationalPopulism() {
   useEffect(()=> {
     updateToolTip()
   }, [index])
-
-  function reColourMap(refCurrent) {
-    d3.selectAll('path').attr('fill', country => {
-      const value = country.properties.electionData?.[refCurrent].value;
-      const noDataForCountry = !value;
-      const noDataForYear = value === 'x';
-      const transparent = noDataForCountry || noDataForYear;
-      if (transparent) return 'transparent';
-      const shadeOfGreen = d3.interpolateReds(value / 100);
-      return shadeOfGreen;
-    });
-  }
 
   function mountD3Map() {
     const projection = d3
@@ -67,11 +55,13 @@ export default function NationalPopulism() {
       .append("g")
       .attr("class", "tooltip")
       .style("visibility", "hidden");
+
     tooltipGroup
       .append("rect")
       .attr("width", 200)
       .attr("height", 60)
       .attr("fill", "white");
+
     tooltipGroup
       .append("text")
       .attr("class", "years-text")
@@ -96,6 +86,18 @@ export default function NationalPopulism() {
         .select(this)
         .select('.tooltip')
         .style("visibility", "hidden")
+    });
+  }
+
+  function reColourMap(refCurrent) {
+    d3.selectAll('path').attr('fill', country => {
+      const value = country.properties.electionData?.[refCurrent].value;
+      const noDataForCountry = !value;
+      const noDataForYear = value === 'x';
+      const transparent = noDataForCountry || noDataForYear;
+      if (transparent) return 'transparent';
+      const shadeOfGreen = d3.interpolateReds(value / 100);
+      return shadeOfGreen;
     });
   }
 
